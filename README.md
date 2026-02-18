@@ -1,5 +1,3 @@
-[TOC]
-
 # 1. Project Introduction
 
 ## 1.1 Background
