@@ -36,7 +36,7 @@ First Let's check the null values in our dataset :
 FEATURES												Num_null
 ---------------------------------------------------------------
 index                                                         0
-cell_id                                                       0
+souce_ip                                                       0
 DL_TRAFFIC_VOLUME                                            21
 UL_TRAFFIC_VOLUME                                            21
 Inter_X2_based_HO_prep                                     3313
@@ -85,7 +85,7 @@ Therefore, we can later use some missing value padding methods for continuous nu
 
 
 
-### 2.1.2 Look into data by `cell_id`
+### 2.1.2 Look into data by `souce_ip`
 
 #### (1) Features with too many missing values
 
