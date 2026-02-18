@@ -4,7 +4,7 @@
 
 ## 1.1 Background
 
-Telecom networks are generating huge amounts of data coming from traffic on this network due to customer calls and services consumptions. This data contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
+Telecom networks are generating huge amounts of data coming from traffic on this network . This data contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
 
 The main purpose of the proposed project is detecting anomalies and predicting incident/failures on the network in real time. 
 
@@ -22,11 +22,10 @@ In this project, we begin with a small sample dataset, which has only 8280 recor
 
 <img src="images/image-20211210103241230.png" alt="image-20211210103241230" style="zoom: 50%;" />
 
-In this data 26 features are measured, including time, cell id and some KPIs of LTE (Long Term Evolution, a wireless data communication technology standard).
+In this data 26 features are measured, including time, source ip, packet size.
 
 These data come from 5 cells, that is, each cell contains 1656 records.
 
-> `cell` : In the field of mobile communication, the area covered by wireless signals is called a *cell*, which generally refers to the area that can be covered by the signal of a base station.
 
 
 
