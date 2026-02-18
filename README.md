@@ -2,7 +2,7 @@
 
 ## 1.1 Background
 
-Telecom networks are generating huge amounts of data coming from traffic on this network . This data contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
+ There is huge amounts of data coming from traffic on this network . This data contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
 
 The main purpose of the proposed project is detecting anomalies and predicting incident/failures on the network in real time. 
 
