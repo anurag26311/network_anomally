@@ -4,7 +4,7 @@
 
 **Written by:** Anurag Singh, Saurabh Kumar, Suraj Kumar Jha  
 **Guide:** Prof. J. B. Jawale  
-**Sponsored by:** Department of Electronics and Telecommunication Engineering, AIT Place
+**Sponsored by:** Department of Electronics and Telecommunication Engineering, AIT Pune
 
 # 1. Project Introduction
 
