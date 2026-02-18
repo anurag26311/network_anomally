@@ -27,38 +27,6 @@ These data come from 5 cells, that is, each cell contains 1656 records.
 
 
 
-First Let's check the null values in our dataset :
-
-```
-FEATURES												Num_null
----------------------------------------------------------------
-index                                                         0
-souce_ip                                                       0
-DL_TRAFFIC_VOLUME                                            21
-UL_TRAFFIC_VOLUME                                            21
-Inter_X2_based_HO_prep                                     3313
-PDCP_SDU_Volume_DL                                         3313
-VoLTE_total_traffic                                        3313
-INTRA_FREQ_HO_SR_RATIO                                       40
-RRC_SR_RATIO                                                 28
-Intra_eNB_HO_SR_total_RATIO                                3321
-E_UTRAN_RRC_Conn_Stp_Failure_due_RRC_timer_expiry_RATIO    3313
-CELL_AVAILABILITY_RATIO                                      20
-RACH_Stp_Completion_SR_RATIO                               3313
-Total_E_UTRAN_RRC_Conn_Stp_SR_RATIO                        3313
-Inter_RAT_HO_SR_UTRAN_SRVCC_RATIO                          5595
-UL_THROUGHPUT_RATIO                                          28
-E_RAB_QCI1_DR_RATIO                                        3324
-DCR_LTE_RATIO                                                28
-CSSR_LTE_RATIO                                               28
-LTE_INTER_ENODEB_HOSR_RATIO                                1695
-E_UTRAN_Inter_Freq_HO_SR_RATIO                             4967
-Inter_RAT_HO_SR_GERAN_SRVCC_RATIO                          3989
-Inter_RAT_Total_HO_SR_RATIO                                3731
-E_UTRAN_tot_HO_SR_inter_eNB_X2_RATIO                       3347
-DL_THROUGHPUT_RATIO                                          28
-E_RAB_DR_RATIO                                             3314
-```
 
 In the data, many variables have a large number of missing values! Usually, for missing values, we will either fill them using other means or delete features/records with many missing values. In our case, it can be seen that there is perhaps some correlation between these missing values (e.g., many variables have 3313 missing values). We will start with one point and then move on to consider how to deal with them.
 
