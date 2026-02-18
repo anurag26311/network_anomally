@@ -95,40 +95,6 @@ It can be seen that the data corresponding to the features are all continuous. F
 
 Therefore, we can later use some missing value padding methods for continuous numeric variables.
 
-### 2.1.2 Look into data by `network_node_id`
-
-#### (1) Features with too many missing values
-
-Based on the above discussion, we looked at the missing values in each node data
-
-![](images/NaN_count_by_cell.png)
-
-It is obvious that for the third and fourth node in the above figure, they have much more missing values on certain features.  To see it more clearly, we can print out only those who do not have too many NaN values (less than 30% for example).
-
-![](images/after_drop.png)
-
-Now, we will look into the distribution of those columns whose NaN values need to be filled later.
-
-<img src="images/distribution_of_sparse_columns.png" style="zoom:60%;" />
-
-For different distributions, we can propose the following strategies:
-
-- fill with <u>mode</u> : for some features with very concentrated distribution (e.g. `Fwd_Header_Length`, row3, col1 in figure above)
-
-- fill with <u>mean</u> : for features with relatively large variance (e.g. `Total_Bwd_Packets`, row1, col2 in figure above)
-
-- fill with <u>specific value</u> depending on the definition of feature : the data distribution of certain features varies widely across nodes (e.g. `Bwd_URG_Flags`, row3, col3 in figure above. Its left and right parts are actually the distribution in two different nodes).
-
-  In our case, the <u>median</u> is used. This is because it is tested that the median of these characteristics is very close to the center of one of the distributions. Of course, we can be very flexible in our approach for this type of features
-
-#### (2) Highly relevant features
-
-When modeling, features that are highly correlated can cause redundancy. We can simplify the model by keeping only the features with weak correlation.
-
-![](images/correlation.png)
-
-Since our data itself is not particularly high dimensional and the correlation between the features presented in each node is different, we need to be careful when removing them. To do this, we can record the features that are identified as redundant in each node, and then remove those that are redundant for most nodes (4 nodes out of 5, in our case), and there are 6 features meet the criteria to delete.
-
 ### 2.1.3 Fill NaN & Add new features
 
 According to the above analysis, we first remove the redundant feature values and then fill them according to different methods
