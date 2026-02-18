@@ -2,7 +2,7 @@
 
 ## 1.1 Background
 
- There is huge amounts of data coming from traffic on this network . This data contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
+ This project contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
 
 The main purpose of the proposed project is detecting anomalies and predicting incident/failures on the network in real time. 
 
@@ -18,11 +18,7 @@ In order to achieve the target,  work is to be performed on comparing and valida
 
 In this project, we begin with a small sample dataset, which has only 8280 records.
 
-In this data 26 features are measured, including time, source ip, packet size.
-
-These data come from 5 cells, that is, each cell contains 1656 records.
-
-
+In this data 26 features are measured, including time, source ip, packet size and many more
 
 
 
@@ -71,8 +67,6 @@ For different distributions, we can propose the following strategies:
 - fill with <u>mode</u> : for some features with very concentrated distribution (e.g. `Inter_RAT_HO_SR_GERAN_SRVCC_RATIO`, row3, col1 in figure above)
 
 - fill with <u>mean</u> : for features with relatively large variance (e.g. `VoLTE_total_traffic`, row1, col2 in figure above)
-
-- fill with <u>specific value</u> depending on the definition of feature : the data distribution of certain features varies widely across cells (e.g. `E_UTRAN_Inter_Freq_HO_SR_RATIO`, row3, col3 in figure above. Its left and right parts are actually the distribution in two different cells).
 
   In our case, the <u>median</u> is used. This is because it is tested that the median of these characteristics is very close to the center of one of the distributions. Of course, we can be very flexible in our approach for this type of features
 
