@@ -1,5 +1,3 @@
-[TOC]
-
 # Project Synopsis: Addressing the Gaps in Modern Network Anomaly Detection
 
 **Written by:** Anurag Singh, Saurabh Kumar, Suraj Kumar Jha  
