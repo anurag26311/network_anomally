@@ -36,7 +36,6 @@ In order to achieve the target,  work is to be performed on comparing and valida
 
 In this project, we begin with a focused subset of the CIC-IDS2017 dataset, which has 8280 records for initial analysis.
 
-<img src="images/image-20211210103241230.png" alt="image-20211210103241230" style="zoom: 50%;" />
 
 In this data 26 features are measured, including time, network node id and some traffic features of TCP/IP (Transmission Control Protocol, the core communication standard).
 
