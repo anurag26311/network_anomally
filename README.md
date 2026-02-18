@@ -20,8 +20,6 @@ In order to achieve the target,  work is to be performed on comparing and valida
 
 In this project, we begin with a small sample dataset, which has only 8280 records.
 
-<img src="images/image-20211210103241230.png" alt="image-20211210103241230" style="zoom: 50%;" />
-
 In this data 26 features are measured, including time, source ip, packet size.
 
 These data come from 5 cells, that is, each cell contains 1656 records.
