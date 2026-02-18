@@ -1,14 +1,32 @@
+[TOC]
+
+# Project Synopsis: Addressing the Gaps in Modern Network Anomaly Detection
+
+**Written by:** Anurag Singh, Saurabh Kumar, Suraj Kumar Jha  
+**Guide:** Prof. J. B. Jawale  
+**Sponsored by:** Department of Electronics and Telecommunication Engineering, AIT Place
+
 # 1. Project Introduction
 
-## 1.1 Background
+## 1.1 Problem Statement & Background
 
- This project contains a lot of valuable information that enable machine learning models to learn from and predict outcomes to maintain service quality.
+With the rapid expansion of the internet and cloud-based services, network attacks are becoming increasingly sophisticated and dynamic. Traditional, signature-based intrusion detection systems are no longer effective against zero-day and evolving threats.
+
+While Machine Learning (ML)-based approaches show promise, most existing academic models rely on outdated datasets (like KDD’99 or NSL-KDD) and "black-box" algorithms that lack interpretability and adaptability. This limits their real-world applicability and trust among cybersecurity professionals. Hence, there is a need to develop an anomaly detection model that utilizes realistic, modern datasets, balances detection performance with interpretability, and is robust against adversarial and evolving attack patterns.
 
 The main purpose of the proposed project is detecting anomalies and predicting incident/failures on the network in real time. 
 
 In order to achieve the target,  work is to be performed on comparing and validating the results of three approaches: 1) Auto-Encoder (Deep learning - Neural network approach) 2) Isolation Forest and 3) the combination of the two previous approaches. Finally, a conclusion about  the optimal approach needs to be obtained.
 
+## 1.2 Literature Survey
 
+| Author(s) | Contribution | Limitations |
+| :--- | :--- | :--- |
+| **Tavallaee et al. (2009)** – NSL-KDD Dataset | Improved version of KDD’99 dataset for anomaly detection benchmarking | Lacks modern attack patterns and IoT/cloud traffic |
+| **Lippmann et al. (2000)** – DARPA Dataset | Early benchmark dataset for intrusion detection | Obsolete traffic protocols, limited data diversity |
+| **Ring et al. (2019)** – CIC-IDS2017 | Comprehensive dataset with realistic, labeled modern attacks | High dimensionality and preprocessing complexity |
+| **Javaid et al. (2016)** – Deep Learning for Intrusion Detection | Demonstrated DL efficiency for anomaly detection | Poor interpretability and explainability |
+| **Xu et al. (2020)** – Explainable AI (XAI) in Security | Introduced explainable ML methods for security decisions | Limited comparative evaluation with black-box models |
 
 # 2. Work Conducted
 
@@ -16,11 +34,48 @@ In order to achieve the target,  work is to be performed on comparing and valida
 
 ### 2.1.1 Data understanding
 
-In this project, we begin with a small sample dataset, which has only 8280 records.
+In this project, we begin with a focused subset of the CIC-IDS2017 dataset, which has 8280 records for initial analysis.
 
-In this data 26 features are measured, including time, source ip, packet size and many more
+<img src="images/image-20211210103241230.png" alt="image-20211210103241230" style="zoom: 50%;" />
 
+In this data 26 features are measured, including time, network node id and some traffic features of TCP/IP (Transmission Control Protocol, the core communication standard).
 
+These data come from 5 network nodes, that is, each node contains 1656 records.
+
+> `node` : In the field of network communication, the area covered by specific subnet routers is called a *node*, which generally refers to the segment that can be covered by the signal of a gateway.
+
+First Let's check the null values in our dataset :
+
+```
+FEATURES												Num_null
+---------------------------------------------------------------
+index                                                         0
+node_id                                                       0
+Total_Length_of_Fwd_Packets                                  21
+Total_Length_of_Bwd_Packets                                  21
+Flow_Duration                                              3313
+Total_Fwd_Packets                                          3313
+Total_Bwd_Packets                                          3313
+Fwd_Packet_Length_Max                                        40
+Fwd_Packet_Length_Min                                        28
+Bwd_Packet_Length_Max                                      3321
+Bwd_Packet_Length_Min                                      3313
+Flow_Bytes/s                                                 20
+Flow_Packets/s                                             3313
+Flow_IAT_Mean                                              3313
+Flow_IAT_Std                                               5595
+Fwd_IAT_Total                                                28
+Bwd_IAT_Total                                              3324
+Fwd_PSH_Flags                                                28
+Bwd_PSH_Flags                                                28
+Fwd_URG_Flags                                              1695
+Bwd_URG_Flags                                              4967
+Fwd_Header_Length                                          3989
+Bwd_Header_Length                                          3731
+Fwd_Packets/s                                              3347
+Bwd_Packets/s                                                28
+Min_Packet_Length                                          3314
+```
 
 In the data, many variables have a large number of missing values! Usually, for missing values, we will either fill them using other means or delete features/records with many missing values. In our case, it can be seen that there is perhaps some correlation between these missing values (e.g., many variables have 3313 missing values). We will start with one point and then move on to consider how to deal with them.
 
@@ -28,11 +83,9 @@ After a brief glance at the data file in Excel, we found this:
 
 <img src="images/in_excel.jpg" style="zoom:30%;" />
 
-Apparently, these missing values are concentrated in a certain region. More specifically, for this cell, it seems that it does not contain certain KPIs. In the next step, we can consider processing the data of different cells separately.
+Apparently, these missing values are concentrated in a certain region. More specifically, for this network segment, it seems that it does not contain certain traffic metrics. In the next step, we can consider processing the data of different nodes separately.
 
 > Viewing data in Excel is a very simple way (so simple that it is sometimes overlooked) to provide some information in a very visual way
-
-
 
 Then we'll look into the data distribution : 
 
@@ -42,21 +95,17 @@ It can be seen that the data corresponding to the features are all continuous. F
 
 Therefore, we can later use some missing value padding methods for continuous numeric variables.
 
-
-
-### 2.1.2 Look into data by `souce_ip`
+### 2.1.2 Look into data by `network_node_id`
 
 #### (1) Features with too many missing values
 
-Based on the above discussion, we looked at the missing values in each cell data
+Based on the above discussion, we looked at the missing values in each node data
 
 ![](images/NaN_count_by_cell.png)
 
-It is obvious that for the third and fourth cell in the above figure, they have much more missing values on certain features.  To see it more clearly, we can print out only those who do not have too many NaN values (less than 30% for example).
+It is obvious that for the third and fourth node in the above figure, they have much more missing values on certain features.  To see it more clearly, we can print out only those who do not have too many NaN values (less than 30% for example).
 
 ![](images/after_drop.png)
-
-
 
 Now, we will look into the distribution of those columns whose NaN values need to be filled later.
 
@@ -64,13 +113,13 @@ Now, we will look into the distribution of those columns whose NaN values need t
 
 For different distributions, we can propose the following strategies:
 
-- fill with <u>mode</u> : for some features with very concentrated distribution (e.g. `Inter_RAT_HO_SR_GERAN_SRVCC_RATIO`, row3, col1 in figure above)
+- fill with <u>mode</u> : for some features with very concentrated distribution (e.g. `Fwd_Header_Length`, row3, col1 in figure above)
 
-- fill with <u>mean</u> : for features with relatively large variance (e.g. `VoLTE_total_traffic`, row1, col2 in figure above)
+- fill with <u>mean</u> : for features with relatively large variance (e.g. `Total_Bwd_Packets`, row1, col2 in figure above)
+
+- fill with <u>specific value</u> depending on the definition of feature : the data distribution of certain features varies widely across nodes (e.g. `Bwd_URG_Flags`, row3, col3 in figure above. Its left and right parts are actually the distribution in two different nodes).
 
   In our case, the <u>median</u> is used. This is because it is tested that the median of these characteristics is very close to the center of one of the distributions. Of course, we can be very flexible in our approach for this type of features
-
-
 
 #### (2) Highly relevant features
 
@@ -78,21 +127,23 @@ When modeling, features that are highly correlated can cause redundancy. We can 
 
 ![](images/correlation.png)
 
-Since our data itself is not particularly high dimensional and the correlation between the features presented in each cell is different, we need to be careful when removing them. To do this, we can record the features that are identified as redundant in each cell, and then remove those that are redundant for most cells (4 cells out of 5, in our case), and there are 6 features meet the criteria to delete.
-
-
+Since our data itself is not particularly high dimensional and the correlation between the features presented in each node is different, we need to be careful when removing them. To do this, we can record the features that are identified as redundant in each node, and then remove those that are redundant for most nodes (4 nodes out of 5, in our case), and there are 6 features meet the criteria to delete.
 
 ### 2.1.3 Fill NaN & Add new features
 
 According to the above analysis, we first remove the redundant feature values and then fill them according to different methods
 
-On top of the above, we will also consider the effects of time of day ( hour of a day) and cell.
+On top of the above, we will also consider the effects of time of day ( hour of a day) and node region.
 
 Finally, we get 8279 data containing 20 features.
 
-
-
 ## 2.2 Modeling
+
+### 2.2.0 Proposed System Overview
+
+**Model Core:**
+*   **Autoencoder:** Detects anomalies via reconstruction error — represents a high-performing but less interpretable approach.
+*   **Isolation Forest:** Detects anomalies by isolating outliers — interpretable and computationally efficient.
 
 ### 2.2.1 Isolation Forest
 
@@ -128,8 +179,6 @@ IF=IsolationForest(n_estimators=150,
 
 After the model is trained, we use it to calculate the anomaly score for each sample (the higher the score, the more likely it is to be an outlier)
 
-
-
 ### 2.2.2  Auto-Encoder (AE)
 
 #### (1) Introduction
@@ -144,8 +193,6 @@ In the anomaly detection scenario, we can also interpret it this way: what AE ex
 
 Based on that, we can apply AE to detect outliers.
 
-
-
 #### (2) Implementation
 
 As before, we start with a relatively simple model structure. Specifically, in the encoder and decoder, we just use two dense layers:
@@ -155,8 +202,6 @@ As before, we start with a relatively simple model structure. Specifically, in t
 <img src="images/image-20220124214135607.png" alt="image-20220124214135607" style="zoom:67%;" />
 
 For the AE model, we need to calculate the difference (which we call "loss") between the reconstructed data and the original data, and outliers tend to have larger losses. 
-
-
 
 ### 2.2.3 Combination of *IF* and *AE*
 
@@ -174,8 +219,6 @@ Also in integration learning, there is a method called "Bagging". It is a voting
 
 - The IF model or the AE model thinks it's abnormal
 - OR : both models think it's abnormal
-
-
 
 ## 2.3 Result Evaluation 
 
@@ -204,8 +247,6 @@ In this section, we will analyze the output metrics (abnormal probabilities or l
 > - the circles beyond the boundaries are considered as outliers.
 
 It can be seen that the two algorithms related to isolation forest get similar results. And for the *AE_loss*, there is a large discrepancy in its value (the mean value is 0.73 while the max value is 97.6). That is because the reconstruction loss is the mean square error of input and reconstructed output, whose value does not have an upper limit. 
-
-
 
 #### (2) Interrelation
 
@@ -237,8 +278,6 @@ In the above figure, we compressed the original 20-dimensional data to 2~3 dimen
 
 - **AE+IF(stacking)** give a lot of anomalous alerts even in the area where the most of the points are concentrated (which would normally be considered normal points) 
 
-  
-
 ### 2.3.2 Identification of anomalies 
 
 #### IQR method
@@ -252,8 +291,6 @@ Mathematically, we have:
 - lower_bound  = Q1 - 1.5*IQR
 
 where Q1, Q3 are 25% and 75% quantile respectively. But in our case, the lower bound won't be used, since the lower the metric value is, the less possible a record will be an anomaly.
-
-
 
 #### (1) Result - Stacking Model
 
@@ -269,8 +306,6 @@ That is, if we use the IQR method to calculate the threshold for determining whe
 
 It can be seen that the result obtained using a combination of the two models (IF + AE) is between that of Isolation Forest and AE. 
 
-
-
 #### (2) Result - Bagging Model
 
 If we count the number of times a sample is determined to be an outlier by the Isolated Forest model as well as the AE model, we can get the following results
@@ -285,8 +320,6 @@ This means that if there are `n` model(s) that consider a sample to be an outlie
 
 - `n` = 1 : **8.20%**, that is, the "union" of the 2 models' results
 - `n` = 2 : **0.61%**, that is, the "intersection" of the 2 models' results
-
-#### 
 
 ### 2.3.3 Conclusion
 
@@ -307,13 +340,27 @@ It can be seen that
 
 But for this, we can't directly decide which result is better. In fact, we need further expert opinion (a priori knowledge) to determine the performance of the model.
 
+# 3. Hardware & Software Tools Required
 
+## Hardware Requirements
 
-# 3. Summary & Reflection
+*   **Processor:** Intel i5 or above
+*   **RAM:** Minimum 8 GB
+*   **Storage:** 50 GB (for dataset and model checkpoints)
 
-## 3.1 Problems encountered
+## Software Requirements
 
-### 3.1.1 Handling large number of missing values
+*   **OS:** Windows / Linux (Ubuntu preferred)
+*   **Programming Language:** Python
+*   **Libraries:** NumPy, Pandas, Scikit-learn, TensorFlow, Matplotlib, SHAP
+*   **Dataset:** CIC-IDS2017 (Canadian Institute for Cybersecurity)
+*   **IDE:** Jupyter Notebook / VS Code
+
+# 4. Summary & Reflection
+
+## 4.1 Problems encountered
+
+### 4.1.1 Handling large number of missing values
 
 About half of the features in the data provided have more than 40% missing values. How to handle them and minimize the impact on the distribution of the original data? I spent a lot of time on this problem. 
 
@@ -321,9 +368,7 @@ At first, I tried to start with understanding the physical meaning of the featur
 
 Consider that the time is recorded in the data. Next, I tried to use the interpolation method. However, some features are missing for the entire time period recorded.
 
-At Mr. Hoayek's suggestion, I divided the data into cells and realized that the data was missing because some features were not recorded in a particular cell and were not "randomly" generated. In each region (cell), the distribution and correlation of the values of the features are more easily observed. On this basis, I was able to use the method mentioned in the previous section for the missing values.
-
-
+At Mr. Hoayek's suggestion, I divided the data into nodes and realized that the data was missing because some features were not recorded in a particular node and were not "randomly" generated. In each region (node), the distribution and correlation of the values of the features are more easily observed. On this basis, I was able to use the method mentioned in the previous section for the missing values.
 
 ### 3.1.2 Evaluation of model output
 
@@ -331,24 +376,27 @@ In this project, our model is unsupervised. This means that there are outliers i
 
 For this, I visualized the results and calculated the percentage of records that are considered anomalous based on the models' output. Although these are not "precise" evaluation results, they still provide some degree of feedback on the performance of the model. This is why, in unsupervised learning, we need the a priori knowledge of experts to help us adjust and improve the model.
 
+## 4.2 Knowledge acquired
 
-
-## 3.2 Knowledge acquired
-
-### 3.2.1 Theoretical aspect
+### 4.2.1 Theoretical aspect
 
 In the theoretical phase of this project, I learned the theoretical concepts of Isolation Forest and (Variational) Auto-Encoder. More importantly, from this starting point, I reviewed and learned more about statistics (mixed Gaussian models, cross-entropy...), and thus able to understand the models from a more "statistical learning method" perspective.
 
-### 3.2.2 Practical aspect
+### 4.2.2 Practical aspect
 
 In this project, I had the opportunity to apply knowledge about unsupervised learning in a practical scenario and to start the content of deep learning based on Tensorflow (Keras). Even though I didn't use very advanced techniques, it's still a very meaningful start for me, and I will continue to work in this field.
 
-
-
-## 3.3 Possible improvements
+## 4.3 Possible improvements
 
 This project is my initial exploration in anomaly detection, therefore I did not do a very deep exploration in the construction of the model (using very simple parameter settings instead). Therefore, in this regard, there is still more learning and improvement to be done.
 
 In addition to that, the evaluation of unsupervised models is a very open problem in this project. In my previous studies, there was no experience in this area. In industry, there should be some established practices to follow, and it may also take into account the needs of "real-time applications". These are things that I can explore further based on the work I have done so far.
 
+## 4.4 Application
 
+The proposed model can be applied in:
+
+*   **Enterprise Network Security:** To monitor and detect anomalous traffic in real-time.
+*   **Cloud Service Providers:** For detecting malicious activities in virtualized environments.
+*   **IoT Systems:** To identify compromised devices generating abnormal network behavior.
+*   **Cyber Defense Research:** As a benchmark framework for evaluating model interpretability and robustness.
